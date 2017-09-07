@@ -1,5 +1,6 @@
 package br.com.talkhub.thprototipo;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,11 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+
         mRef = FirebaseDatabase.getInstance().getReference();
         mEmail = (EditText) findViewById(R.id.et_email_login);
         mSenha = (EditText) findViewById(R.id.et_senha_login);
@@ -65,16 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 cadastrar(email, senha);
             }
         });
-        //Listener que verifica status da autenticação
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                //Se o usuário estiver logado, é executada a ação dentro deste if
-                if(firebaseAuth.getCurrentUser() != null){
-                    Toast.makeText(MainActivity.this, "Logado com sucesso", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
+
     }
 
     //Este método faz a validação dos campos e tenta fazer o login no firebase
@@ -89,37 +84,56 @@ public class MainActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(!task.isSuccessful()){
                         Toast.makeText(MainActivity.this, "Algo deu errado", Toast.LENGTH_SHORT).show();
+                    } else{
+                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
                     }
                 }
             });
         }
     }
     //Este método faz o cadastro de um novo usuário, e já salva dados no database também
-    public void cadastrar(String email, String senha){
+    public void cadastrar(final String email, final String senha){
 
         if(TextUtils.isEmpty(email) || TextUtils.isEmpty(senha)){
             Toast.makeText(MainActivity.this, "Campos em branco", Toast.LENGTH_SHORT).show();
         }
         else{
-            Usuario usuario =  new Usuario(email, "", "");
-            mRef.child("usuarios").push().setValue(usuario);
-
 
             mAuth.createUserWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
+
                     if(!task.isSuccessful()){
                         Toast.makeText(MainActivity.this, "Algo deu errado", Toast.LENGTH_SHORT);
+                    } else{
+
+                        //Listener que verifica status da autenticação
+                        mAuthListener = new FirebaseAuth.AuthStateListener() {
+                            @Override
+                            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                                //Se o usuário estiver logado, é executada a ação dentro deste if
+                                if(firebaseAuth.getCurrentUser() != null){
+                                    Usuario usuario = new Usuario();
+                                    usuario.setEmail(email);
+                                    Intent intent = new Intent(MainActivity.this, DadosCadastraisActivity.class);
+                                    intent.putExtra("email",usuario.getEmail());
+                                    startActivity(intent);
+                                }
+                            }
+                        };
+                        mAuth.addAuthStateListener(mAuthListener);
+
+
+
                     }
                 }
             });
+
+
+
         }
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
+
 }
