@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +26,8 @@ public class HomeActivity extends AppCompatActivity {
     private DatabaseReference mRef;
     private FirebaseAuth mAuth;
     private TextView mLabelNomeUsuario;
-    private Button mNovoCartao;
+    private Button mNovaEquipe;
+    private ListView mListaEquipes;
 
 
 
@@ -36,13 +39,13 @@ public class HomeActivity extends AppCompatActivity {
 
         mRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-        mNovoCartao = (Button) findViewById(R.id.bt_novo_cartao);
-        FirebaseUser user = mAuth.getCurrentUser();
-
-
+        mNovaEquipe = (Button) findViewById(R.id.bt_nova_equipe);
+        mListaEquipes = (ListView) findViewById(R.id.lv_equipes);
+        final FirebaseUser user = mAuth.getCurrentUser();
         mLabelNomeUsuario = (TextView) findViewById(R.id.tv_nome_usuario);
 
         Query query = mRef.child("usuarios").orderByChild("email").equalTo(user.getEmail());
+        final Query listEquipesQuery = mRef.child("equipes").child("membros").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -65,13 +68,51 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        mNovoCartao.setOnClickListener(new View.OnClickListener() {
+        mNovaEquipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Abrir activity da inserção de novo cartão
-                startActivity(new Intent(HomeActivity.this, CartaoActivity.class));
+                startActivity(new Intent(HomeActivity.this, EquipeActivity.class));
             }
         });
+
+        //Adapter para preencher o ListView de equipes
+
+        listEquipesQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        })
+
+        FirebaseListAdapter<String> firebaseListAdapter = new FirebaseListAdapter<String>(
+                this,
+                String.class,
+                android.R.layout.simple_list_item_1,
+                mRef.child("teste")
+                //todo O próximo passo é conseguir exibir as equipes em que o usuário logado está como membro
+                //todo para fazer isso, acredito que o correto será criar um nó equipexusuario, onde a gente
+                //o id de equipe e usuario para montar a relação, tem que fundamentar que relação n x n são
+                //melhores de ser feitas criando um novo nó
+        ) {
+
+
+            @Override
+            protected void populateView(View v, String model, int position) {
+
+                TextView textView = (TextView) v.findViewById(android.R.id.text1);
+                textView.setText(model);
+
+            }
+        };
+
+        mListaEquipes.setAdapter(firebaseListAdapter);
+
 
 
     }
