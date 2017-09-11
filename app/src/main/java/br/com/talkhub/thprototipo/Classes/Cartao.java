@@ -9,7 +9,12 @@ public class Cartao {
 
     private String titulo;
     private String descricao;
+    private String emailUsuario;
 
+
+    public String getEmailUsuario() {
+        return emailUsuario;
+    }
 
     public String getTitulo() {
         return titulo;
@@ -19,8 +24,9 @@ public class Cartao {
         return descricao;
     }
 
-    public Cartao(String titulo, String descricao) {
+    public Cartao(String titulo, String descricao, String emailUsuario) {
         this.titulo = titulo;
         this.descricao = descricao;
+        this.emailUsuario = emailUsuario;
     }
 }
