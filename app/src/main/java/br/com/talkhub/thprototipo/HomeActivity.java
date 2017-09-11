@@ -1,11 +1,12 @@
 package br.com.talkhub.thprototipo;
 
-import android.support.annotation.NonNull;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -15,11 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.Map;
-
-import br.com.talkhub.thprototipo.Classes.Usuario;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -27,6 +24,7 @@ public class HomeActivity extends AppCompatActivity {
     private DatabaseReference mRef;
     private FirebaseAuth mAuth;
     private TextView mLabelNomeUsuario;
+    private Button mNovoCartao;
 
 
 
@@ -38,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
 
         mRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
+        mNovoCartao = (Button) findViewById(R.id.bt_novo_cartao);
         FirebaseUser user = mAuth.getCurrentUser();
 
 
@@ -64,6 +62,14 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        mNovoCartao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Abrir activity da inserção de novo cartão
+                startActivity(new Intent(HomeActivity.this, CartaoActivity.class));
             }
         });
 

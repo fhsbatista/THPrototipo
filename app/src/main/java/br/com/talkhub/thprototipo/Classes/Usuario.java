@@ -53,10 +53,7 @@ public class Usuario {
         this.sobrenome = sobrenome;
     }
 
-    public void addUserDatabase(){
-        mRef = FirebaseDatabase.getInstance().getReference("usuarios");
-        mRef.push().setValue(this);
-    }
+
 
 
 

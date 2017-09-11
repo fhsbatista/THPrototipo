@@ -18,7 +18,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".DadosCadastraisActivity" />
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".CartaoActivity"></activity>
     </application>
 
 </manifest>
