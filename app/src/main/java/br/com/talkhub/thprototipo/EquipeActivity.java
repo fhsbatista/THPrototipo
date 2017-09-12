@@ -22,7 +22,7 @@ public class EquipeActivity extends AppCompatActivity {
     private EditText mNomeEquipe;
     private EditText mDescEquipe;
     private Button mSalvarEquipe;
-    private DatabaseReference mRef;
+    private DatabaseReference mRefEquipe, mRefEquipeUsuarios;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String usuarioCriador;
@@ -34,7 +34,8 @@ public class EquipeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_equipe);
 
         mAuth = FirebaseAuth.getInstance();
-        mRef = FirebaseDatabase.getInstance().getReference().child("equipes");
+        mRefEquipe = FirebaseDatabase.getInstance().getReference().child("equipes");
+        mRefEquipeUsuarios = FirebaseDatabase.getInstance().getReference().child("equipesUsuarios");
         administradores = new ArrayList<String>();
         membros = new ArrayList<String>();
 
@@ -60,7 +61,12 @@ public class EquipeActivity extends AppCompatActivity {
                         administradores,
                         membros);
 
-                mRef.push().setValue(equipe);
+                String keyEquipe = mRefEquipe.push().getKey();
+                mRefEquipe.child(keyEquipe).setValue(equipe);
+                /*todo o próximo passo é conseguir recuperar o id do usuário logado para fazer a inserção
+                da linha abaixo*/
+                mRefEquipeUsuarios.child(keyEquipe).child().setValue(usuarioCriador);
+
                 startActivity(new Intent(EquipeActivity.this, HomeActivity.class));
             }
         });

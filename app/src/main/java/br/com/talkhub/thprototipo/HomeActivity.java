@@ -88,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        })
+        });
 
         FirebaseListAdapter<String> firebaseListAdapter = new FirebaseListAdapter<String>(
                 this,
