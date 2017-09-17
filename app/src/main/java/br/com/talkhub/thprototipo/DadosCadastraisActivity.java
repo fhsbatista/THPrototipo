@@ -25,7 +25,7 @@ import java.util.Map;
 
 import br.com.talkhub.thprototipo.Classes.Usuario;
 
-public class DadosCadastraisActivity extends AppCompatActivity {
+public class    DadosCadastraisActivity extends AppCompatActivity {
 
     private DatabaseReference mRef;
     private FirebaseAuth mAuth;

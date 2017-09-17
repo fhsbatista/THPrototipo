@@ -95,7 +95,8 @@ public class HomeActivity extends AppCompatActivity {
                 String.class,
                 android.R.layout.simple_list_item_1,
                 mRef.child("teste")
-                //todo O próximo passo é conseguir exibir as equipes em que o usuário logado está como membro
+                //
+                // todo O próximo passo é conseguir exibir as equipes em que o usuário logado está como membro
                 //todo para fazer isso, acredito que o correto será criar um nó equipexusuario, onde a gente
                 //o id de equipe e usuario para montar a relação, tem que fundamentar que relação n x n são
                 //melhores de ser feitas criando um novo nó
