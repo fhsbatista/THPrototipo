@@ -1,6 +1,7 @@
 package br.com.talkhub.thprototipo;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -73,8 +74,8 @@ public class EquipeActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot data : dataSnapshot.getChildren()){
-                    keyUsuario = data.getKey().toString();
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    keyUsuario = child.getKey().toString();
 
                 }
             }
@@ -112,6 +113,8 @@ public class EquipeActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
 }

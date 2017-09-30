@@ -1,6 +1,7 @@
 package br.com.talkhub.thprototipo;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,12 +25,12 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private DatabaseReference mRef;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private TextView mLabelNomeUsuario;
     private Button mNovaEquipe;
     private ListView mListaEquipes;
-
-
+    private String user;
+    private String idUser;
 
 
     @Override
@@ -37,36 +38,32 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mRef = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
         mNovaEquipe = (Button) findViewById(R.id.bt_nova_equipe);
         mListaEquipes = (ListView) findViewById(R.id.lv_equipes);
-        final FirebaseUser user = mAuth.getCurrentUser();
         mLabelNomeUsuario = (TextView) findViewById(R.id.tv_nome_usuario);
 
-        Query query = mRef.child("usuarios").orderByChild("email").equalTo(user.getEmail());
-        final Query listEquipesQuery = mRef.child("equipes").child("membros").equalTo(user.getEmail());
+        user = mAuth.getCurrentUser().getEmail().toString();
+        mRef = FirebaseDatabase.getInstance().getReference();
+        Query query = mRef.child("usuarios").orderByChild("email").equalTo(user);
+
+
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getChildrenCount() == 0){
-                    mLabelNomeUsuario.setText("não entrou");
-
-                    } else{
-                for (DataSnapshot child : dataSnapshot.getChildren()){
-
-                    Map<String, Object> usuarioMapped = (Map<String, Object>) child.getValue();
-                    mLabelNomeUsuario.setText(usuarioMapped.get("nome").toString());
-                    }
+                for(DataSnapshot item : dataSnapshot.getChildren()){
+                    idUser = item.getKey().toString();
+                    carregarLista(idUser);
                 }
-                }
-
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
+
+
 
         mNovaEquipe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,30 +73,22 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        //Adapter para preencher o ListView de equipes
 
-        listEquipesQuery.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+    }
 
-            }
-        });
 
+    //Adapter para preencher o ListView de equipes
+
+    public void carregarLista(String idUser){
         FirebaseListAdapter<String> firebaseListAdapter = new FirebaseListAdapter<String>(
                 this,
                 String.class,
                 android.R.layout.simple_list_item_1,
-                mRef.child("teste")
-                //
-                // todo O próximo passo é conseguir exibir as equipes em que o usuário logado está como membro
-                //todo para fazer isso, acredito que o correto será criar um nó equipexusuario, onde a gente
-                //o id de equipe e usuario para montar a relação, tem que fundamentar que relação n x n são
-                //melhores de ser feitas criando um novo nó
+                //todo Conseguir exibir na lista, as equipes embedadas no usuário logado
+                mRef.child("usuarios").child(idUser).child("equipes")
+
         ) {
 
 
@@ -114,9 +103,12 @@ public class HomeActivity extends AppCompatActivity {
 
         mListaEquipes.setAdapter(firebaseListAdapter);
 
-
-
     }
+
+
+
+
+
 
 
 }
