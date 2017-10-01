@@ -46,7 +46,7 @@ public class EquipeActivity extends AppCompatActivity {
 
         //Referência criada para usar nas queries que envolvem a equipe
         mRefEquipe = FirebaseDatabase.getInstance().getReference().child("equipes");
-
+        mRefUsuario = FirebaseDatabase.getInstance().getReference().child("usuarios");
         //As listas abaixos foram criadas para serem utilizadas na inserção da equipe
         administradores = new ArrayList<String>();
         membros = new ArrayList<String>();
@@ -64,14 +64,25 @@ public class EquipeActivity extends AppCompatActivity {
         administradores.add(usuarioCriador);
         membros.add(usuarioCriador);
 
+       Query query = mRefUsuario.orderByChild("email").equalTo(usuarioCriador).limitToFirst(1);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot item : dataSnapshot.getChildren()){
+                    idUsuarioLogado = item.getKey().toString();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
 
 
 
-
-        /*Usuario usuario = new Usuario();
-        final String idUsuarioLogado = usuario.getIdUsuario(usuario.getEmailUsuarioLogado());*/
 
         //Executado quando o usuário clica no botão salvar
         mSalvarEquipe.setOnClickListener(new View.OnClickListener() {

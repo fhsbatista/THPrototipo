@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_nome_usuario"
         android:layout_marginLeft="10dp"
-        android:text="teste"
+        android:text="Equipes"
         android:textSize="40sp"
         android:layout_gravity="center" />
 
