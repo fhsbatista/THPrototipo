@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.talkhub.thprototipo.Classes.Equipe;
+import br.com.talkhub.thprototipo.Classes.Usuario;
 
 public class EquipeActivity extends AppCompatActivity {
 
@@ -32,7 +33,7 @@ public class EquipeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String usuarioCriador;
-    private String keyUsuario;
+    private String idUsuarioLogado;
     private List<String> administradores;
     private List<String> membros;
 
@@ -63,28 +64,14 @@ public class EquipeActivity extends AppCompatActivity {
         administradores.add(usuarioCriador);
         membros.add(usuarioCriador);
 
-        //Referência criada para usar na query de persquisa do usuário logado
-        mRefUsuario = FirebaseDatabase.getInstance().getReference().child("usuarios");
-
-        //Query que será usada para pesquisar o id do usuário logado
-        Query query = mRefUsuario.orderByChild("email").equalTo(usuarioCriador);
 
 
-        //Recuperação de dados da query criada para recuperar o id do usuário logado
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    keyUsuario = child.getKey().toString();
 
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+
+        /*Usuario usuario = new Usuario();
+        final String idUsuarioLogado = usuario.getIdUsuario(usuario.getEmailUsuarioLogado());*/
 
         //Executado quando o usuário clica no botão salvar
         mSalvarEquipe.setOnClickListener(new View.OnClickListener() {
@@ -97,13 +84,7 @@ public class EquipeActivity extends AppCompatActivity {
                         administradores,
                         membros);
 
-                //Cria um id para a equipe
-                String keyEquipe = mRefEquipe.push().getKey();
-                //Adiciona a nova equipe no documento de equipes
-                mRefEquipe.child(keyEquipe).setValue(equipe);
-
-                //Embeda no documento "usuario" o id e o nome da equipe
-                mRefUsuario.child(keyUsuario).child("equipes").child(keyEquipe).setValue(equipe.getNome());
+                equipe.novaEquipe(idUsuarioLogado);
 
                 //Depois de finalizada a inserção, o usuário é levado para página HOME
                 startActivity(new Intent(EquipeActivity.this, HomeActivity.class));
@@ -113,6 +94,8 @@ public class EquipeActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
 

@@ -49,7 +49,25 @@ public class Equipe {
         return membros;
     }
 
+    public void novaEquipe(String idUsuarioLogado){
 
+        DatabaseReference mRefEquipe = FirebaseDatabase.getInstance().getReference().child("equipes");
+        DatabaseReference mRefUsuario = FirebaseDatabase.getInstance().getReference().child("usuarios");
+
+        //Cria um id para a equipe
+        String keyEquipe = mRefEquipe.push().getKey();
+        //Adiciona a nova equipe no documento de equipes
+        mRefEquipe.child(keyEquipe).setValue(this);
+
+        //Embeda no documento "usuario" o id e o nome da equipe
+
+        mRefUsuario.child(idUsuarioLogado).child("equipes").child(keyEquipe).setValue(this.nome);
+
+
+
+
+
+    }
 
 
 
