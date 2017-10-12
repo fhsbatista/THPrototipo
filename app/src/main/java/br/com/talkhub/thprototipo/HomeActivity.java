@@ -4,14 +4,19 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     private ListView mListaEquipes;
     private String user;
     private String idUser;
+    private FirebaseListAdapter<String> firebaseListAdapter;
 
 
     @Override
@@ -47,20 +53,24 @@ public class HomeActivity extends AppCompatActivity {
         Query query = mRef.child("usuarios").orderByChild("email").equalTo(user);
 
 
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot item : dataSnapshot.getChildren()){
-                    idUser = item.getKey().toString();
-                    carregarLista(idUser);
+
+
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        idUser = item.getKey().toString();
+                        carregarLista(idUser);
+
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
 
 
@@ -72,6 +82,24 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(HomeActivity.this, EquipeActivity.class));
             }
         });
+        
+        mListaEquipes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                final String idEquipe = firebaseListAdapter.getRef(position).getKey().toString();
+                Intent intent = new Intent(HomeActivity.this, HomeEquipeActivity.class);
+                intent.putExtra("idEquipe", idEquipe);
+                startActivity(intent);
+
+            }
+        });
+
+
+
+
+
+
 
 
 
@@ -82,11 +110,10 @@ public class HomeActivity extends AppCompatActivity {
     //Adapter para preencher o ListView de equipes
 
     public void carregarLista(String idUser){
-        FirebaseListAdapter<String> firebaseListAdapter = new FirebaseListAdapter<String>(
+        firebaseListAdapter = new FirebaseListAdapter<String>(
                 this,
                 String.class,
                 android.R.layout.simple_list_item_1,
-                //todo Conseguir exibir na lista, as equipes embedadas no usuário logado
                 mRef.child("usuarios").child(idUser).child("equipes")
 
         ) {
@@ -102,6 +129,10 @@ public class HomeActivity extends AppCompatActivity {
         };
 
         mListaEquipes.setAdapter(firebaseListAdapter);
+
+
+
+
 
     }
 

@@ -25,13 +25,14 @@ import java.util.Map;
 
 import br.com.talkhub.thprototipo.Classes.Usuario;
 
-public class    DadosCadastraisActivity extends AppCompatActivity {
+public class   DadosCadastraisActivity extends AppCompatActivity {
 
     private DatabaseReference mRef;
     private FirebaseAuth mAuth;
     private TextView mEmail;
     private EditText mNome;
     private EditText mSobreNome;
+    private EditText mCompanhia;
     private Button mContinuar;
     private Button mSair;
 
@@ -45,6 +46,7 @@ public class    DadosCadastraisActivity extends AppCompatActivity {
 
         mNome = (EditText) findViewById(R.id.et_nome);
         mSobreNome = (EditText) findViewById(R.id.et_sobrenome);
+        mCompanhia =  (EditText) findViewById(R.id.et_companhia);
         mContinuar = (Button) findViewById(R.id.bt_continuar);
         mAuth = FirebaseAuth.getInstance();
 
@@ -61,6 +63,7 @@ public class    DadosCadastraisActivity extends AppCompatActivity {
                 usuario.setEmail(bundle.getString("email"));
                 usuario.setNome(mNome.getText().toString());
                 usuario.setSobrenome(mSobreNome.getText().toString());
+                usuario.setNomeReferenciaUsuario(usuario.getNome().toLowerCase() + usuario.getSobrenome().toUpperCase().charAt(0) + mCompanhia.getText().toString().toLowerCase());
                 mRef.push().setValue(usuario);
                 startActivity(new Intent(DadosCadastraisActivity.this, HomeActivity.class));
 

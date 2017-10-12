@@ -1,5 +1,6 @@
 package br.com.talkhub.thprototipo.Classes;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -62,6 +63,21 @@ public class Equipe {
         //Embeda no documento "usuario" o id e o nome da equipe
 
         mRefUsuario.child(idUsuarioLogado).child("equipes").child(keyEquipe).setValue(this.nome);
+
+
+
+    }
+
+    public void novoMembro(String idEquipe, String idUsuario, Boolean administrador){
+
+
+        DatabaseReference mRefEquipe = FirebaseDatabase.getInstance().getReference().child(idEquipe).child("membros");
+        DatabaseReference mRefUsuario = FirebaseDatabase.getInstance().getReference().child(idUsuario).child("equipes");
+
+        //Embeda no documento "usuario" o id e o nome da equipe
+        mRefUsuario.child(idUsuario).child("equipes").child(idEquipe).setValue(this.nome);
+        
+
 
 
 

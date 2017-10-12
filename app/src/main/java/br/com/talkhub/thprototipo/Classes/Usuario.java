@@ -18,6 +18,9 @@ public class Usuario {
     private String email;
     private String nome;
     private String sobrenome;
+
+
+    private String nomeReferenciaUsuario;
    //Utilizado quando é necessário saber o ID de um usuário
     private  String keyUsuario;
 
@@ -50,6 +53,15 @@ public class Usuario {
     public void setSobrenome(String sobrenome) {
         this.sobrenome = sobrenome;
     }
+
+    public String getNomeReferenciaUsuario() {
+        return nomeReferenciaUsuario;
+    }
+
+    public void setNomeReferenciaUsuario(String companhia) {
+        this.nomeReferenciaUsuario = companhia;
+    }
+
 
 
 

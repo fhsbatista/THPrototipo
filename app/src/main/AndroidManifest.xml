@@ -20,7 +20,10 @@
         <activity android:name=".DadosCadastraisActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".CartaoActivity" />
-        <activity android:name=".EquipeActivity"></activity>
+        <activity android:name=".EquipeActivity" />
+        <activity android:name=".HomeEquipeActivity" />
+        <activity android:name=".ProjetoActivity" />
+        <activity android:name=".SettingsEquipeActivity"></activity>
     </application>
 
 </manifest>

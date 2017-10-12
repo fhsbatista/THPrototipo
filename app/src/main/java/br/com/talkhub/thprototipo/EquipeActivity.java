@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -95,7 +96,7 @@ public class EquipeActivity extends AppCompatActivity {
                         administradores,
                         membros);
 
-                equipe.novaEquipe(idUsuarioLogado);
+               equipe.novaEquipe(idUsuarioLogado);
 
                 //Depois de finalizada a inserção, o usuário é levado para página HOME
                 startActivity(new Intent(EquipeActivity.this, HomeActivity.class));
